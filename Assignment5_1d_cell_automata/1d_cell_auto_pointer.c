@@ -10,6 +10,7 @@ cells is full (but not both), set the current cell to be full.
 #include <time.h>
 #include <string.h>
 #include "memcheck.h"
+#define MaxArgc 2
 
 /* Signature Function */
 int *initial_array(int num_element);
@@ -67,8 +68,8 @@ int *update(int arr[], int num_element)
   }
   /* initialize pointers */
   cell1 = arr;
-  cell2 = cell1++;
-  cell3 = cell2++;
+  cell2 = cell1 + 1;
+  cell3 = cell2 + 1;
   next_cell = next_arr;
   *next_cell = 0; /* The first cell is always empty. */
   next_cell++; /* Move pointer one space to the right */
@@ -115,7 +116,14 @@ void print_arr(int arr[], int num_element)
   int i;
   for (i = 0; i < num_element; i++)
   {
-    printf("%d", arr[i]);
+    if (arr[i] == 0)
+    {
+      printf(".");
+    }
+    else /* if arr[i] == 1 */
+    {
+      printf("*");
+    }
   }
   printf("\n");
 }
@@ -126,6 +134,12 @@ int main(int argc, char *argv[])
   int i;
   int num_element = atoi(argv[1]);
   int num_generation = atoi(argv[2]);
+  /* Check command-line violations */
+  if (argc > MaxArgc + 1 || num_element == 0 || num_generation == 0)
+  {
+    fprintf(stderr, "usage: %s #cells #generations\n", argv[0]);
+    exit(1);
+  }
   arr1 = initial_array(num_element);
   print_arr(arr1, num_element);
   if (num_generation > 1) /* If there is 1 generation, loop does not work */

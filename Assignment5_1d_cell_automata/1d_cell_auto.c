@@ -10,6 +10,7 @@ cells is full (but not both), set the current cell to be full.
 #include <time.h>
 #include <string.h>
 #include "memcheck.h"
+#define MaxArgc 2
 
 /* Signature Function */
 int *initial_array(int num_element);
@@ -73,7 +74,7 @@ int *update(int arr[], int num_element)
     {
       next_arr[i] = 1;
     }
-    else if (arr[i] == 0  && arr[i - 1] == 0 && arr[i + 1]==1)
+    else if (arr[i] == 0  && arr[i - 1] == 0 && arr[i + 1] == 1)
     {
       next_arr[i] = 1;
     }
@@ -95,7 +96,14 @@ void print_arr(int arr[], int num_element)
   int i;
   for (i = 0; i < num_element; i++)
   {
-    printf("%d", arr[i]);
+    if (arr[i] == 0)
+    {
+      printf(".");
+    }
+    else /* if arr[i] == 1 */
+    {
+      printf("*");
+    }
   }
   printf("\n");
 }
@@ -106,6 +114,12 @@ int main(int argc, char *argv[])
   int i;
   int num_element = atoi(argv[1]);
   int num_generation = atoi(argv[2]);
+  /* Check command-line violations */
+  if (argc > MaxArgc + 1 || num_element == 0 || num_generation == 0)
+  {
+    fprintf(stderr, "usage: %s #cells #generations\n", argv[0]);
+    exit(1);
+  }
   arr1 = initial_array(num_element);
   print_arr(arr1, num_element);
   if (num_generation > 1) /* If there is 1 generation, loop does not work */
@@ -117,7 +131,7 @@ int main(int argc, char *argv[])
       {
         arr2 = update(arr1, num_element);
         print_arr(arr2, num_element);
-        free(arr1);
+        free(arr1); /* Question!!!!!!! Why does arr1 has to be freed every time if it is going to be replaced by updated arr2 in the next round. */
       }
       else
       {
